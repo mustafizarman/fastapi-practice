@@ -1,0 +1,18 @@
+fastapi
+uvicorn
+gunicorn
+sqlmodel
+pydantic
+sqlalchemy
+requests
+python-decouple
+psycopg[binary]
+
+
+pydantic-settings 
+passlib[bcrypt]   
+python-jose[cryptography] #
+alembic
+python-multipart 
+Pillow 
+python-decouple # For decouple_config
