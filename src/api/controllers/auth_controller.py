@@ -21,7 +21,7 @@ def authenticate_and_create_token(db: Session, email: str, password: str) -> tok
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
+    logger.info(f"Login User : {user.email}")
     auth_service.update_last_login(db, user)  # Optional: tracks login time
     logger.info(f"Login successful for: {user.email}")
     return auth_service.create_user_access_token(user)

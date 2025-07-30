@@ -1,5 +1,11 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from typing import Dict
+from src.crud.message_crud import *
+from fastapi import APIRouter, Depends, UploadFile, File
+from sqlalchemy.orm import Session
+from typing import Annotated, Optional
+
+from src.db.connection import get_session
 
 router = APIRouter()
 
@@ -22,19 +28,17 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 @router.websocket("/ws/chat/{sender_id}/{receiver_id}")
-async def chat_ws(websocket: WebSocket, sender_id: int, receiver_id: int):
+async def chat_ws(websocket: WebSocket, sender_id: int, receiver_id: int, session: Session = Depends(get_session)):
     await manager.connect(sender_id, websocket)
     try:
         while True:
             message = await websocket.receive_text()
 
-            # Optional: structure the message (you can include sender id, etc.)
             full_message = f"[User {sender_id}]: {message}"
             
-            # Send to receiver
-            await manager.send_private_message(full_message, receiver_id)
+            save_message_to_db(session=session, sender_id=sender_id, receiver_id=receiver_id, content=message)
 
-            # Optionally echo to sender as well
+            await manager.send_private_message(full_message, receiver_id)
             await websocket.send_text(f"You: {message}")
 
     except WebSocketDisconnect:
