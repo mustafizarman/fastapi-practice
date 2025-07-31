@@ -1,6 +1,5 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.models.message_model import Message
-# app/crud/role_crud.py
 from sqlmodel import Session, select
 from sqlalchemy import or_, and_
 

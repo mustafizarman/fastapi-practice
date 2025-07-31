@@ -1,4 +1,4 @@
-# app/api/routers.py
+
 from fastapi import APIRouter
 from src.core.config import settings
 from src.api.endpoints import auth, users, roles, chats

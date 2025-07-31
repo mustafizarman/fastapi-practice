@@ -1,9 +1,9 @@
 # app/db/connection.py
 from typing import List, Optional
 from sqlmodel import SQLModel, Session, create_engine
-from decouple import config as decouple_config # Using decouple for .env
+from decouple import config as decouple_config 
 
-DATABASE_URL = decouple_config("DATABASE_URL") # Decouple handles default "" itself
+DATABASE_URL = decouple_config("DATABASE_URL") 
 
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL not set in .env or environment variables.")
@@ -17,10 +17,7 @@ engine = create_engine(
 
 def init_db():
     print("creating db")
-    # SQLModel.metadata.create_all(engine) # This is for initial table creation
-    # For migrations, we'll use Alembic instead, so this call will usually be commented out
-    # or used only for quick dev setup without Alembic.
-    pass # We'll remove this from init_db() and rely on Alembic
+    pass
 
 def create_db_and_tables():
     """Utility to create tables for the first time or for testing."""

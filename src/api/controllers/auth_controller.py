@@ -7,7 +7,7 @@ from src.services import auth_service
 from src.schemas import user_schema, token_schema
 from src.models.user_model import User
 from src.core.logger import logger
-from src.core.config import settings  # Ensure you have a settings module for SECRET_KEY & ALGORITHM
+from src.core.config import settings  
 from src.core.security import get_password_hash
 from src.crud.user_crud import get_user_by_email, create_user 
 
@@ -22,13 +22,13 @@ def authenticate_and_create_token(db: Session, email: str, password: str) -> tok
             headers={"WWW-Authenticate": "Bearer"},
         )
     logger.info(f"Login User : {user.email}")
-    auth_service.update_last_login(db, user)  # Optional: tracks login time
+    auth_service.update_last_login(db, user) 
     logger.info(f"Login successful for: {user.email}")
     return auth_service.create_user_access_token(user)
 
 
 def register_new_user(db: Session, user_create: user_schema.UserCreate) -> User:
-     # Avoid circular import
+
 
     existing_user = get_user_by_email(db, user_create.username)
     if existing_user:
@@ -105,7 +105,7 @@ def save_google_picture(picture_url: str) -> str:
     try:
         os.makedirs(PROFILE_PIC_DIR, exist_ok=True)
 
-        # Create a unique filename
+        # unique filename
         filename = f"{uuid4().hex}.jpg"
         filepath = os.path.join(PROFILE_PIC_DIR, filename)
 
@@ -114,7 +114,7 @@ def save_google_picture(picture_url: str) -> str:
         if response.status_code == 200:
             with open(filepath, "wb") as f:
                 f.write(response.content)
-            return filepath  # Or return relative like: f"{PROFILE_PIC_DIR}/{filename}"
+            return filepath  
         else:
             print("Failed to download profile picture.")
     except Exception as e:

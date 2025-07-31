@@ -1,4 +1,4 @@
-# app/models/role_model.py
+
 from datetime import datetime
 from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
@@ -10,14 +10,14 @@ class RoleBase(SQLModel):
     isDeleted: bool = Field(default=False)
 
 class Role(RoleBase, table=True):
-    __tablename__ = "roles" # Explicitly define table name
+    __tablename__ = "roles" 
 
     id: Optional[int] = Field(default=None, primary_key=True)
     createdAt: datetime = Field(default_factory=datetime.utcnow, nullable=False)
     updatedAt: Optional[datetime] = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
     
 
-    # Relationship to User (back_populates is important for bidirectional relationships)
+    # Relationship to User (back_populates)
     users: List["User"] = Relationship(back_populates="role")
 
     def __repr__(self):

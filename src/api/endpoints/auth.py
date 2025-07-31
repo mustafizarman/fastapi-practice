@@ -58,8 +58,8 @@ async def google_login():
         client_secret=CLIENT_SECRET,
         redirect_uri=REDIRECT_URI,
     ) as google:
-        login_url = await google.get_login_redirect()   # ✅ This is a string URL
-        print("Redirecting to Google:", login_url)       # ✅ Will print https://accounts.google.com/...
+        login_url = await google.get_login_redirect()   
+        print("Redirecting to Google:", login_url)       
         return login_url
 
 # Google Callback
@@ -76,7 +76,6 @@ async def google_callback(request: Request, db: Session = Depends(get_session)):
         if not user:
             return RedirectResponse(url=f"{FRONTEND_URL}/login-failed")
 
-        # Use your DB-aware login or register logic
         db_user = auth_controller.google_register_or_login(
             db,
             email=user.email,
@@ -85,77 +84,5 @@ async def google_callback(request: Request, db: Session = Depends(get_session)):
             picture = user.picture
         )
 
-        # Create token (replace with your real JWT logic)
         token = auth_controller.create_access_token({"sub": db_user.email, "id": db_user.id})
         return RedirectResponse(url=f"{FRONTEND_URL}/auth-callback?token={token}")
-
-
-# @router.get("/google/login")
-# async def google_login():
-#     async with GoogleSSO(
-#         client_id=CLIENT_ID,
-#         client_secret=CLIENT_SECRET,
-#         redirect_uri=REDIRECT_URI,
-#     ) as google:
-#         redirect_url = await google.get_login_redirect()
-#         return RedirectResponse(redirect_url)
-
-# @router.get("/google/callback")
-# async def google_callback(request: Request):
-#     async with GoogleSSO(
-#         client_id=CLIENT_ID,
-#         client_secret=CLIENT_SECRET,
-#         redirect_uri=REDIRECT_URI,
-#     ) as google:
-#         user = await google.verify_and_process(request)
-
-#         if not user:
-#             return RedirectResponse(url=f"{FRONTEND_URL}/login-failed")
-
-#         # You can now register/login the user to your DB
-#         # Here we just create a dummy token
-#         token = f"dummy-token-for-{user.email}"
-
-#         return RedirectResponse(url=f"{FRONTEND_URL}/authcallback?token={token}")
-
-# @router.get("/google/callback")
-# async def google_callback(request: Request, db: Session = Depends(get_session)):
-#      async with GoogleSSO(
-#         client_id=CLIENT_ID,
-#         client_secret=CLIENT_SECRET,
-#         redirect_uri=REDIRECT_URI,
-#     ) as google_sso:
-#         user = await google_sso.verify_and_process(request)
-
-#         if not user:
-#             return RedirectResponse(url=f"{FRONTEND_URL}/login-failed")
-
-#         # Register or fetch user from DB
-#         from src.api.controllers import auth_controller
-#         db_user = auth_controller.google_register_or_login(
-#             db, email=user.email, first_name=user.first_name, last_name=user.last_name
-#         )
-
-#         token = auth_controller.create_access_token({"sub": db_user.email})
-#         return RedirectResponse(url=f"{FRONTEND_URL}/?token={token}")
-
-
-# @router.get("/google/callback")
-# async def google_callback(request: Request, db: Session = Depends(get_session)):
-#     async with GoogleSSO(
-#         client_id=CLIENT_ID,
-#         client_secret=CLIENT_SECRET,
-#         redirect_uri=REDIRECT_URI,
-#     ) as google:
-#         user = await google.verify_and_process(request)
-
-#         if not user:
-#             return RedirectResponse(url=f"{FRONTEND_URL}/login-failed")
-
-#         # Create or get user
-#         db_user = auth_controller.google_register_or_login(
-#             db, email=user.email, first_name=user.first_name, last_name=user.last_name
-#         )
-
-#         token = auth_controller.create_access_token({"sub": db_user.email})
-#         return RedirectResponse(url=f"{FRONTEND_URL}/authcallback?token={token}")

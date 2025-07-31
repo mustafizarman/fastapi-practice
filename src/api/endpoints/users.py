@@ -1,4 +1,3 @@
-# app/api/endpoints/users.py
 from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
@@ -22,17 +21,6 @@ async def read_current_user_profile(
     """
     return await user_controller.get_user_profile(db, current_user)
 
-# @router.patch("/me", response_model=user_schema.UserProfile)
-# async def update_current_user_profile(
-#     current_user: Annotated[User, Depends(get_current_active_user)],
-#     user_update: Annotated[user_schema.UserCustomUpdate, Depends()],
-#     profile_picture: Optional[UploadFile] = File(None),
-#     db: Session = Depends(get_session),
-# ):
-#     logger.info(f"Parsed form data: {user_update}")
-#     return await user_controller.update_user_profile(
-#         db, current_user, user_update, profile_picture_file=profile_picture
-#     )
 
 @router.patch("/me", response_model=user_schema.UserProfile)
 async def update_current_user_profile(
@@ -55,9 +43,6 @@ async def read_current_user_role(
     Get current user's role information. (Replaces RoleController.get logic)
     """
     return await user_controller.get_user_role_info(current_user)
-
-# No direct NavController equivalent - frontend would fetch /me and extract data.
-
 
 
 @router.get("/me/authcheck")

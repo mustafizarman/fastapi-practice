@@ -1,20 +1,19 @@
-# app/schemas/user_schema.py
+
 from datetime import date, datetime
 from typing import Optional
 from sqlmodel import SQLModel
 from fastapi import Form, UploadFile
 
 from src.schemas.role_schema import RolePublic
-from src.models.user_model import UserBase # Import UserBase from your model
+from src.models.user_model import UserBase 
 
-# Input Schemas
 class UserCreate(UserBase):
-    password: str # Password should be explicitly required for creation
+    password: str 
 
-class UserUpdate(SQLModel): # Use SQLModel for partial updates
+class UserUpdate(SQLModel): 
     username: Optional[str] = None
     email: Optional[str] = None
-    password: Optional[str] = None # For password change
+    password: Optional[str] = None 
     profile_picture: Optional[str] = None
     birthday: Optional[date] = None
     designation: Optional[str] = None
@@ -30,17 +29,14 @@ class UserCustomUpdate(SQLModel):
     phone_number: Optional[str] = Form(None)
     profile_picture: Optional[UploadFile] = None
 
-# Output Schemas (User without hashed password, but with role details)
 class UserPublic(UserBase):
     id: int
     createdAt: datetime
     updatedAt: Optional[datetime]
-    # No hashed_password field in public schema
-    role: Optional[RolePublic] = None # Embed role data
+    role: Optional[RolePublic] = None 
 
     class Config:
         from_attributes = True
 
-# Specific for Profile (can be same as UserPublic or tailored)
 class UserProfile(UserPublic):
     pass

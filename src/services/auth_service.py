@@ -1,4 +1,4 @@
-# app/services/auth_service.py
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from datetime import timedelta
@@ -24,10 +24,6 @@ def create_user_access_token(user: User) -> Token:
     )
     return Token(access_token=access_token)
 
-# This would replace Django's `update_last_login` signal
 def update_last_login(db: Session, user: User):
-    # SQLAlchemy models automatically update 'updatedAt' on modification
-    # If you need a specific 'last_login' field, add it to your User model
-    # and update it here. For simplicity, we're relying on 'updatedAt' for now.
     pass
 

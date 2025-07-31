@@ -1,4 +1,4 @@
-# app/models/user_model.py
+
 from datetime import datetime, date
 from typing import Optional, List
 from sqlmodel import Field, Relationship, SQLModel
@@ -9,7 +9,6 @@ class UserBase(SQLModel):
     firstname:  Optional[str] = Field(default="", max_length=100)
     
     #lastname:  Optional[str] = Field(default="", max_length=100)
-    
     
     profile_picture: Optional[str] = Field(default=None)
     birthday: Optional[date] = Field(default=None)
@@ -24,20 +23,18 @@ class UserBase(SQLModel):
 
 
 class User(UserBase, table=True):
-    __tablename__ = "users" # Explicitly define table name
-
+    __tablename__ = "users"
     id: Optional[int] = Field(default=None, primary_key=True)
-    hashed_password: str = Field(nullable=False) # Store hashed password
-    auth_provider: str = Field(default="local", nullable=True)  # or "google"
+    hashed_password: str = Field(nullable=False) 
+    auth_provider: str = Field(default="local", nullable=True)  
 
     createdAt: datetime = Field(default_factory=datetime.utcnow, nullable=False)
     updatedAt: Optional[datetime] = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
 
-    # Relationship to Role
+    # Relationship to Role (back-populate)
     role: Optional["Role"] = Relationship(back_populates="users")
 
     def __repr__(self):
         return f"<User(email='{self.email}')>"
 
-# Import Role at the end to avoid circular dependency for forward references
 from src.models.role_model import Role

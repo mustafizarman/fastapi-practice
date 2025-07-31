@@ -1,4 +1,4 @@
-# app/api/controllers/user_controller.py
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, UploadFile, File
 from typing import Optional
@@ -12,7 +12,6 @@ from src.services import file_service
 from src.core.security import get_password_hash
 
 async def get_user_profile(db: Session, current_user: User) -> user_schema.UserProfile:
-    # The user object is already loaded by the dependency, just return it
     return user_schema.UserProfile.model_validate(current_user)
 
 async def update_user_profile(
@@ -22,10 +21,9 @@ async def update_user_profile(
     profile_picture_file: Optional[UploadFile] = File(None),
 ) -> user_schema.UserProfile:
 
-    # Handle profile picture update
     if profile_picture_file:
         file_service.validate_image_extension(profile_picture_file.filename)
-        # Delete old picture if it exists
+        # Delete old picture
         if current_user.profile_picture:
             file_service.delete_profile_picture(current_user.profile_picture)
         
@@ -33,7 +31,6 @@ async def update_user_profile(
         new_pic_path = await file_service.save_profile_picture(profile_picture_file, current_user.id)
         user_update.profile_picture = new_pic_path
     elif user_update.profile_picture is not None and user_update.profile_picture == "":
-        # If client explicitly sends empty string, it means delete the picture
         if current_user.profile_picture:
             file_service.delete_profile_picture(current_user.profile_picture)
         user_update.profile_picture = None
@@ -51,9 +48,6 @@ def create_user(db: Session, user_in: user_schema.UserCreate) -> User:
 
 def get_user_by_email(db: Session, email: str) -> User | None:
     return user_crud.get_user_by_email(session=db, email=email)
-
-# No direct "NavController" equivalent, data can be fetched from UserProfile directly
-# or by combining relevant user/role data in a new schema if needed for frontend nav.
 
 
 def get_all_user_profile(db: Session) -> list[User] | None:

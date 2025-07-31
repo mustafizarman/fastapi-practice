@@ -1,9 +1,9 @@
-# app/crud/user_crud.py
+
 from sqlmodel import Session, select
 from src.models.user_model import User, UserBase
 from src.schemas.user_schema import UserCreate, UserUpdate, UserCustomUpdate
 from src.core.security import get_password_hash
-from src.crud.role_crud import get_learner_role_id, get_role # Import get_role here
+from src.crud.role_crud import get_learner_role_id, get_role 
 from src.core.logger import logger
 
 def get_user(session: Session, user_id: int) -> User | None:
@@ -56,22 +56,17 @@ def create_user(session: Session, user_create: UserCreate) -> User:
 def update_user(session: Session, db_user: User, user_update: UserCustomUpdate) -> User:
     logger.info(f"Original UserUpdate: {user_update}")
     update_data = user_update.model_dump(exclude_unset=True,  exclude_none=True)
-    # update_data = {
-    #     key: value
-    #     for key, value in user_update.model_dump(exclude_unset=True).items()
-    #     if value is not None
-    # }
+
 
     logger.info(f"Filtered update_data: {update_data}")
     if update_data.get("password"):
         update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
 
-    # Handle role_id update: ensure role exists if provided
     if "role_id" in update_data and update_data["role_id"] is not None:
         if not get_role(session, update_data["role_id"]):
             raise ValueError(f"Role with ID {update_data['role_id']} does not exist.")
     logger.info(f"Success Update")
-    db_user.sqlmodel_update(update_data) # SQLModel's update method
+    db_user.sqlmodel_update(update_data) 
     
     session.add(db_user)
     session.commit()
@@ -85,7 +80,6 @@ def delete_user(session: Session, db_user: User) -> User:
     session.refresh(db_user)
     return db_user
 
-# Logic for on_delete=models.SET(get_default_role) when a Role is deleted
 def set_default_role_for_users(session: Session, deleted_role_id: int):
     default_role_id = get_learner_role_id(session)
     if default_role_id:

@@ -1,4 +1,4 @@
-# app/api/controllers/role_controller.py
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from src.crud import role_crud, user_crud
@@ -19,7 +19,6 @@ def update_existing_role(db: Session, role_id: int, role_update: role_schema.Rol
     if not db_role:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     
-    # Check if new name conflicts with existing roles
     if role_update.name and role_update.name != db_role.name:
         if role_crud.get_role_by_name(db, name=role_update.name):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="New role name already exists")
@@ -31,7 +30,6 @@ def delete_role_by_id(db: Session, role_id: int) -> dict:
     if not db_role:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role not found")
     
-    # Handle users whose role is being deleted (similar to Django's on_delete=SET)
     user_crud.set_default_role_for_users(db, deleted_role_id=role_id)
     
     role_crud.delete_role(db=db, db_role=db_role)

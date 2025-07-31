@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 from sqlmodel import select
 from fastapi import APIRouter, Depends, UploadFile, File
-from sqlmodel import Session # <-- Import Session from sqlmodel
+from sqlmodel import Session 
 from typing import Annotated, Optional
-from src.models.message_model import Message # <-- Import User model for type hint
-from datetime import date # Add this import if birthday field is used in schema directly
+from src.models.message_model import Message 
+from datetime import date 
 
 from src.db.connection import get_session 
 from src.crud.message_crud import get_messages
